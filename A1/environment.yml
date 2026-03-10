@@ -1,0 +1,16 @@
+name: 46755REM
+channels:
+  - gurobi
+  - defaults
+dependencies:
+  - python=3.11
+  - numpy
+  - ipywidgets
+  - notebook
+  - jupyterlab
+  - ipykernel
+  - pandas
+  - scipy
+  - matplotlib
+  - gurobi
+prefix: D:\software\miniconda_install\envs\46755REM
