@@ -2,11 +2,12 @@
 import gurobipy as gp
 from gurobipy import GRB
 
-
+# ----define an empty class----
+"""an empty container where you can dynamically add attributes."""
 class Expando(object):
     pass
 
-
+# ----define a data container----
 class LP_InputData:
     def __init__(
         self,
@@ -28,7 +29,7 @@ class LP_InputData:
         self.objective_sense = objective_sense
         self.model_name = model_name
 
-
+# ----define the optimization problem class----
 class LP_OptimizationProblem:
     def __init__(self, input_data: LP_InputData):
         self.data = input_data
