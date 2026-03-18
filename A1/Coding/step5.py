@@ -112,10 +112,20 @@ def get_base_market_data():
     load_names = [f"d{i}" for i in range(1, 18)]
 
     Pmax = np.array([152, 152, 350, 591, 60, 155, 155, 400, 400, 300, 310, 350], dtype=float)
+    R_plus = np.array([40, 40, 70, 180, 60, 30, 30, 0, 0, 0, 60, 40], dtype=float)
+    R_minus = np.array([40, 40, 70, 180, 60, 30, 30, 0, 0, 0, 60, 40], dtype=float)
+
+    RU = np.array([120, 120, 350, 240, 60, 155, 155, 280, 280, 300, 180, 240], dtype=float)
+    RD = np.array([120, 120, 350, 240, 60, 155, 155, 280, 280, 300, 180, 240], dtype=float)
+
     Pmin = np.zeros(12, dtype=float)
 
     gen_cost = np.array([13.32, 13.32, 20.70, 20.93, 26.11, 10.52, 10.52, 6.02, 5.47, 0.00, 10.52, 10.89], dtype=float)
-
+    C_u = np.array([15, 15, 10, 8, 7, 16, 16, 0, 0, 0, 17, 16], dtype=float)
+    C_d = np.array([14, 14, 9, 7, 5, 14, 14, 0, 0, 0, 16, 14], dtype=float)
+    C_plus = np.array([15, 15, 24, 25, 28, 16, 16, 0, 0, 0, 14, 16], dtype=float)
+    C_minus = np.array([11, 11, 16, 17, 23, 7, 7, 0, 0, 0, 8, 8], dtype=float)
+    
     Wcap = np.array([157.92, 162.83, 154.34, 126.48, 142.32, 147.68], dtype=float)
     wind_cost = np.zeros(6, dtype=float)
 
@@ -143,12 +153,20 @@ def get_base_market_data():
         "load_names": load_names,
         "Pmax": Pmax,
         "Pmin": Pmin,
+        "R_plus": R_plus,
+        "R_minus": R_minus,
+        "RU": RU,
+        "RD": RD,
         "gen_cost": gen_cost,
         "Wcap": Wcap,
         "wind_cost": wind_cost,
         "load_share_percent": load_share_percent,
         "base_load_bid": base_load_bid,
         "system_demand": system_demand,
+        "C_u": C_u,
+        "C_d": C_d,
+        "C_plus": C_plus,
+        "C_minus": C_minus
     }
 
 
@@ -210,7 +228,13 @@ def build_input_data_step1_single_hour(hour: int, wind_factor_hour: np.ndarray) 
 
     Pmax = data["Pmax"]
     Pmin = data["Pmin"]
+    RU = data["RU"]
+    RD = data["RD"]
     gen_cost = data["gen_cost"]
+    C_plus = data["C_plus"]
+    C_minus = data["C_minus"]
+    C_u = data["C_u"]
+    C_d = data["C_d"]
     Wcap = data["Wcap"]
     wind_cost = data["wind_cost"]
     load_share_percent = data["load_share_percent"]
@@ -287,7 +311,13 @@ def build_input_data_step1_single_hour(hour: int, wind_factor_hour: np.ndarray) 
         "load_names": load_names,
         "Pmax": Pmax,
         "Pmin": Pmin,
+        "RU": RU,
+        "RD": RD,
         "gen_cost": gen_cost,
+        "C_u": C_u,
+        "C_d": C_d,
+        "C_plus": C_plus,
+        "C_minus": C_minus,
         "Wcap": Wcap,
         "wind_cost": wind_cost,
         "Dmax": Dmax,
@@ -405,11 +435,16 @@ def build_input_data_balancing(
     thermal_names = pack_da["thermal_names"]
     Pmax = pack_da["Pmax"]
     Pmin = pack_da["Pmin"]
+    RU = pack_da["RU"]
+    RD = pack_da["RD"]
+
     gen_cost = pack_da["gen_cost"]
     lambda_da = result_da["lambda_da"]
     g_da = result_da["g_da"]
     g_actual_forced = rt_realization["g_actual_forced"]
     total_imbalance = rt_realization["total_imbalance"]
+    C_plus = pack_da["C_plus"]  
+    C_minus = pack_da["C_minus"]
 
     # Need balancing amount:
     # sum(up) - sum(down) + shed = - total_imbalance
@@ -440,15 +475,19 @@ def build_input_data_balancing(
         i = thermal_names.index(name)
 
         # Up/down offer prices
-        up_price[k] = lambda_da + 0.10 * gen_cost[i]
-        down_price[k] = lambda_da - 0.15 * gen_cost[i]
+        # up_price[k] = lambda_da + 0.10 * gen_cost[i]
+        # down_price[k] = lambda_da - 0.15 * gen_cost[i]
+
+        up_price[k] = lambda_da + 0.10 * C_plus[i]
+        down_price[k] = lambda_da - 0.15 * C_minus[i]
+
 
         # IMPORTANT:
         # Upward headroom is based on actual forced output before balancing
-        ub[idx_up[k]] = max(0.0, Pmax[i] - g_actual_forced[i])
+        ub[idx_up[k]] = min(max(0.0, Pmax[i] - g_actual_forced[i]), RU[k])
 
         # Downward room is based on actual forced output before balancing
-        ub[idx_down[k]] = max(0.0, g_actual_forced[i] - Pmin[i])
+        ub[idx_down[k]] = min(max(0.0, g_actual_forced[i] - Pmin[i]), RD[k])
 
     ub[idx_ls] = GRB.INFINITY #ls means load shedding
 
@@ -762,7 +801,7 @@ if __name__ == "__main__":
     SCENARIO = 30
 
     OUTAGE_UNIT = "g9"
-    BALANCING_UNITS = ["g1", "g2", "g3", "g4", "g5", "g6", "g7", "g8", "g10", "g11", "g12"]
+    BALANCING_UNITS = ["g1", "g2", "g3", "g4", "g5", "g6", "g7", "g11", "g12"]
 
     WIND_DOWN_UNITS = ["w1", "w2", "w3"]   # -15%
     WIND_UP_UNITS = ["w4", "w5", "w6"]     # +10%

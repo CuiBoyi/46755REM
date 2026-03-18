@@ -1,4 +1,18 @@
 
+(46755REM) Zhuanz@Mac A1 % /opt/anaconda3/envs/46755REM/bin/python /Users/Zhuanz/Library/CloudStorage/OneDrive-
+DanmarksTekniskeUniversitet/46755REM/A1/Coding/step5.py
+Restricted license - for non-production use only - expires 2027-11-29
+g1 is a balancing provider. Up = 120.0000, Down = 0.0000, Balancing revenue = 1594.8000
+g2 is a balancing provider. Up = 120.0000, Down = 0.0000, Balancing revenue = 1594.8000
+g3 is a balancing provider. Up = 101.2555, Down = 0.0000, Balancing revenue = 1345.6856
+g4 is a balancing provider. Up = 0.0000, Down = 0.0000, Balancing revenue = 0.0000
+g5 is a balancing provider. Up = 0.0000, Down = 0.0000, Balancing revenue = 0.0000
+g6 is a balancing provider. Up = 0.0000, Down = 0.0000, Balancing revenue = 0.0000
+g7 is a balancing provider. Up = 0.0000, Down = 0.0000, Balancing revenue = 0.0000
+g8 is a balancing provider. Up = 0.0000, Down = 0.0000, Balancing revenue = 0.0000
+g10 is a balancing provider. Up = 0.0000, Down = 0.0000, Balancing revenue = 0.0000
+g11 is a balancing provider. Up = 0.0000, Down = 0.0000, Balancing revenue = 0.0000
+g12 is a balancing provider. Up = 86.1680, Down = 0.0000, Balancing revenue = 1145.1729
 
 ======================================================================
 DAY-AHEAD MARKET (STEP 1) - HOUR 18
@@ -62,30 +76,30 @@ System is short before balancing.
 BALANCING MARKET
 ======================================================================
 Required balancing quantity: 427.4235 MW
-Balancing price: 12.9600 €/MWh
+Balancing price: 13.2900 €/MWh
 Load shedding: 0.0000 MW
 
 Balancing activation:
-  g1: up =   152.0000 MW | down =     0.0000 MW | up offer =  12.2220 | down offer =   8.8920
-  g2: up =   152.0000 MW | down =     0.0000 MW | up offer =  12.2220 | down offer =   8.8920
-  g3: up =    37.2555 MW | down =     0.0000 MW | up offer =  12.9600 | down offer =   7.7850
-  g4: up =     0.0000 MW | down =     0.0000 MW | up offer =  12.9830 | down offer =   7.7505
-  g5: up =     0.0000 MW | down =     0.0000 MW | up offer =  13.5010 | down offer =   6.9735
-  g6: up =     0.0000 MW | down =     0.0000 MW | up offer =  11.9420 | down offer =   9.3120
-  g7: up =     0.0000 MW | down =     0.0000 MW | up offer =  11.9420 | down offer =   9.3120
-  g8: up =     0.0000 MW | down =     0.0000 MW | up offer =  11.4920 | down offer =   9.9870
+  g1: up =   120.0000 MW | down =     0.0000 MW | up offer =  12.3900 | down offer =   9.2400
+  g2: up =   120.0000 MW | down =     0.0000 MW | up offer =  12.3900 | down offer =   9.2400
+  g3: up =   101.2555 MW | down =     0.0000 MW | up offer =  13.2900 | down offer =   8.4900
+  g4: up =     0.0000 MW | down =     0.0000 MW | up offer =  13.3900 | down offer =   8.3400
+  g5: up =     0.0000 MW | down =     0.0000 MW | up offer =  13.6900 | down offer =   7.4400
+  g6: up =     0.0000 MW | down =     0.0000 MW | up offer =  12.4900 | down offer =   9.8400
+  g7: up =     0.0000 MW | down =     0.0000 MW | up offer =  12.4900 | down offer =   9.8400
+  g8: up =     0.0000 MW | down =     0.0000 MW | up offer =  10.8900 | down offer =  10.8900
  g10: up =     0.0000 MW | down =     0.0000 MW | up offer =  10.8900 | down offer =  10.8900
- g11: up =     0.0000 MW | down =     0.0000 MW | up offer =  11.9420 | down offer =   9.3120
- g12: up =    86.1680 MW | down =     0.0000 MW | up offer =  11.9790 | down offer =   9.2565
+ g11: up =     0.0000 MW | down =     0.0000 MW | up offer =  12.2900 | down offer =   9.6900
+ g12: up =    86.1680 MW | down =     0.0000 MW | up offer =  12.4900 | down offer =   9.6900
 
 ======================================================================
 ACTUAL REAL-TIME OUTPUTS
 ======================================================================
 
 Conventional actual outputs:
-  g1: actual =   152.0000 MW | deviation from DA =   152.0000 MW
-  g2: actual =   152.0000 MW | deviation from DA =   152.0000 MW
-  g3: actual =    37.2555 MW | deviation from DA =    37.2555 MW
+  g1: actual =   120.0000 MW | deviation from DA =   120.0000 MW
+  g2: actual =   120.0000 MW | deviation from DA =   120.0000 MW
+  g3: actual =   101.2555 MW | deviation from DA =   101.2555 MW
   g4: actual =     0.0000 MW | deviation from DA =     0.0000 MW
   g5: actual =     0.0000 MW | deviation from DA =     0.0000 MW
   g6: actual =   155.0000 MW | deviation from DA =     0.0000 MW
@@ -111,31 +125,33 @@ TOTAL PROFITS: ONE-PRICE vs TWO-PRICE
 Conventional generators:
   Unit |   One-price (€) |   Two-price (€)
 --------------------------------------------
-    g1 |        -54.7200 |        -54.7200
-    g2 |        -54.7200 |        -54.7200
-    g3 |       -288.3576 |       -288.3576
+    g1 |         -3.6000 |         -3.6000
+    g2 |         -3.6000 |         -3.6000
+    g3 |       -750.3033 |       -750.3033
     g4 |          0.0000 |          0.0000
     g5 |          0.0000 |          0.0000
     g6 |         57.3500 |         57.3500
     g7 |         57.3500 |         57.3500
     g8 |       1948.0000 |       1948.0000
-    g9 |       -828.0000 |       -828.0000
+    g9 |       -960.0000 |       -960.0000
    g10 |       3267.0000 |       3267.0000
    g11 |        114.7000 |        114.7000
-   g12 |        178.3678 |        178.3678
+   g12 |        206.8032 |        206.8032
 
 Wind farms:
   Unit |   One-price (€) |   Two-price (€)
 --------------------------------------------
-    w1 |       1115.4828 |       1115.4828
-    w2 |       1185.9597 |       1185.9597
-    w3 |       1065.4854 |       1065.4854
-    w4 |        974.6982 |        958.1412
-    w5 |       1234.1016 |       1213.1383
-    w6 |       1328.8782 |       1306.3049
+    w1 |       1109.3107 |       1109.3107
+    w2 |       1179.3975 |       1179.3975
+    w3 |       1059.5899 |       1059.5899
+    w4 |        977.3377 |        958.1412
+    w5 |       1237.4436 |       1213.1383
+    w6 |       1332.4768 |       1306.3049
 
 Totals:
-Total conventional profit (one-price): 4396.9702 €
-Total conventional profit (two-price): 4396.9702 €
-Total wind profit (one-price):         6904.6059 €
-Total wind profit (two-price):         6844.5124 €
+Total conventional profit (one-price): 3933.7000 €
+Total conventional profit (two-price): 3933.7000 €
+Total wind profit (one-price):         6895.5561 €
+Total wind profit (two-price):         6825.8825 €
+/Users/Zhuanz/Library/CloudStorage/OneDrive-DanmarksTekniskeUniversitet/46755REM/A1/Coding/plot.py:525: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  plt.tight_layout()
