@@ -1,8 +1,11 @@
 
 # Define the plot function
 
+from turtle import width
+
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 
 # supply curve and demand curve
@@ -367,4 +370,157 @@ def plot_storage_hourly(outputs):
     fig.text(0.5, 0.01, total_text, ha="center", va="bottom", fontsize=15)
 
     plt.tight_layout(rect=[0, 0.15, 1, 1])
+    plt.show()
+
+import matplotlib.pyplot as plt
+
+
+def plot_dispatch_and_profit_step5(pack_da: dict, result_da: dict, profit_pack: dict):
+    """
+    Plot:
+    - x-axis: unit names (conventional + wind)
+    - left y-axis: generation output (bar)
+        * day-ahead dispatch
+        * actual real-time output
+    - right y-axis: profit (line)
+        * day-ahead profit
+        * one-price total profit
+        * two-price total profit
+    """
+
+    thermal_names = pack_da["thermal_names"]
+    wind_names = pack_da["wind_names"]
+    unit_names = thermal_names + wind_names
+
+    # ----------------------------
+    # Generation data
+    # ----------------------------
+    da_output = np.concatenate([result_da["g_da"], result_da["w_da"]])
+    actual_output = np.concatenate([profit_pack["g_actual"], profit_pack["w_actual"]])
+
+    # ----------------------------
+    # Profit data
+    # DA-only profit from day-ahead market
+    # ----------------------------
+    da_profit = np.concatenate([result_da["thermal_profit_da"], result_da["wind_profit_da"]])
+
+    # Total profit under one-price and two-price settlement
+    one_price_profit = np.concatenate([profit_pack["conv_profit_one"], profit_pack["wind_profit_one"]])
+    two_price_profit = np.concatenate([profit_pack["conv_profit_two"], profit_pack["wind_profit_two"]])
+
+    # ----------------------------
+    # Plot settings
+    # ----------------------------
+    x = np.arange(len(unit_names))
+    width = 0.36
+
+    fig, ax1 = plt.subplots(figsize=(16, 7))
+
+    # Left axis: output bars
+    #bars1 = ax1.bar(x - width/2, da_output, width, label="Day-ahead output")
+    #bars2 = ax1.bar(x + width/2, actual_output, width, label="Actual real-time output")
+    bars1 = ax1.bar(x - width/2, da_output, width,
+                color="#005FF8",
+                alpha=0.75,
+                edgecolor="black",
+                linewidth=0.5,
+                label="Day-ahead")
+
+    bars2 = ax1.bar(x + width/2, actual_output, width,
+                color="#FF5E00",
+                alpha=0.75,
+                edgecolor="black",
+                linewidth=0.5,
+                label="Real-time")
+
+    ax1.set_xlabel("Generating units")
+    ax1.set_ylabel("Power output [MW]")
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(unit_names, rotation=45)
+    ax1.grid(axis="y", linestyle="--", alpha=0.4)
+    ax1.set_ylim(0, 1200)
+    ax1.set_yticks(np.arange(0, 1200, 200))
+
+    # Right axis: profit lines
+    ax2 = ax1.twinx()
+    line1, = ax2.plot(x, da_profit,color="#005FF8", marker="s",
+         markersize=8,
+         markerfacecolor="white",
+         markeredgecolor="black", linewidth=1, label="Day-ahead profit")
+    line2, = ax2.plot(x, one_price_profit, color="#FF5E00", marker="x", markersize=8,
+         markerfacecolor="white",
+         markeredgecolor="black",linewidth=1, label="One-price profit")
+    line3, = ax2.plot(x, two_price_profit, color="#FF5E00", marker="+", markersize=8,
+         markerfacecolor="white",
+         markeredgecolor="black",linewidth=1, label="Two-price profit")
+
+    ax2.set_ylabel("Profit [€]")
+    ax2.set_ylim(-3500, 3500)  # Adjust as needed
+    ax2.set_yticks(np.arange(-3500, 3500, 1000))
+
+
+    # Vertical separator between conventional and wind
+    split_pos = len(thermal_names) - 0.5
+    #ax1.axvline(split_pos, linestyle="--", alpha=0.7)
+
+    # Optional text labels
+    ymax_left = max(np.max(da_output), np.max(actual_output))
+    #ax1.text(len(thermal_names)/2 - 0.5, ymax_left * 1.03, "Conventional", ha="center", va="bottom")
+    #ax1.text(len(thermal_names) + len(wind_names)/2 - 0.5, ymax_left * 1.03, "Wind", ha="center", va="bottom")
+
+    # Combined legend
+    handles1, labels1 = ax1.get_legend_handles_labels()
+    handles2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(handles1 + handles2, labels1 + labels2, loc="upper left", ncol=2)
+    ax2.axhline(y=0, linestyle="--", linewidth=1)
+
+    # =========================
+    # inset for wind profits
+    # =========================
+    axins = inset_axes(ax2, width="32%", height="32%", bbox_to_anchor=(0.075, -0.7, 0.9, 1.3),
+    bbox_transform=ax2.transAxes,)
+
+    # wind index range
+    n_th = len(thermal_names)
+    wind_x = x[n_th:]
+
+    # only plot wind profits in inset
+    axins.plot(wind_x, da_profit[n_th:], color="#005FF8", marker="s",markersize=8,
+         markerfacecolor="white",
+         markeredgecolor="black", linewidth=1.5, label="DA profit")
+    axins.plot(wind_x, one_price_profit[n_th:], color="#FF5E00", marker="x", markersize=8,
+         markerfacecolor="white",
+         markeredgecolor="black",linewidth=1.5, label="One-price")
+    axins.plot(wind_x, two_price_profit[n_th:], color="#FF5E00", marker="+", markersize=8,
+         markerfacecolor="white",
+         markeredgecolor="black",linewidth=1.5, label="Two-price")
+
+    # zero line
+    axins.axhline(0, linestyle="--", linewidth=0.8)
+
+    # x ticks only for wind units
+    axins.set_xticks(wind_x)
+    axins.set_xticklabels(unit_names[n_th:], rotation=45, fontsize=8)
+
+    # zoom y-range around wind profits
+    wind_profit_min = min(
+        np.min(da_profit[n_th:]),
+        np.min(one_price_profit[n_th:]),
+        np.min(two_price_profit[n_th:])
+    )
+    wind_profit_max = max(
+        np.max(da_profit[n_th:]),
+        np.max(one_price_profit[n_th:]),
+        np.max(two_price_profit[n_th:])
+    )
+
+    margin = 0.08 * (wind_profit_max - wind_profit_min)
+    axins.set_ylim(wind_profit_min - margin, wind_profit_max + margin)
+
+    axins.set_title("Zoom: wind profits", fontsize=9)
+    axins.grid(axis="y", linestyle="--", alpha=0.3)
+
+    fig.suptitle("Day-ahead vs Real-time Output and Profit")
+    #plt.title("Day-ahead vs Real-time Output and Profit by Unit")
+    plt.tight_layout()
     plt.show()
