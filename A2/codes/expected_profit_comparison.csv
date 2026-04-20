@@ -1,0 +1,5 @@
+Scheme,Group,N_Scenarios,Expected_Profit_EUR
+One-price,In-sample,125,354348.0492506385
+One-price,Out-of-sample,3000,392522.80819435354
+Two-price,In-sample,125,308332.47971828637
+Two-price,Out-of-sample,3000,345937.02353033493
