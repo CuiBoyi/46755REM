@@ -1,0 +1,11 @@
+name: 46120PiWE
+channels:
+  - defaults
+dependencies:
+  - scipy
+  - pytest
+  - python=3.11
+  - numpy
+  - pandas
+  - matplotlib
+prefix: D:\miniconda3\envs\46120PiWE
